@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" href="{{ url_for('static', filename='img/requiem_new.ico') }}" type="image/x-icon">
+
+  <title>{{ headers['app'] }} | {{ headers['section'] }}</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css') }}">
+  <!-- Enlaza el CSS personalizado -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+
+</head>
+<body class="hold-transition login-page">
+
+<div class="login-box">
+  <!-- /.login-logo -->
+  <div class="card card-outline card-primary">
+
+    <div class="card-header text-center">
+      <a href="login.html" class="h1"><b>REQUIEM</b>Panel</a>
+    </div>
+
+    <div class="card-body">
+      <p class="login-box-msg">{{ headers['section'] }}</p>
+
+      <!-- Mostrar los mensajes flash -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alert-container">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form action="{{ url_for('login.login') }}" method="POST" id="login">
+
+        <!--
+        {% if message is defined and message %}
+        <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+        -->
+
+        <div class="form-group">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" id="username" name="username" placeholder="Usuaria/o">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user-nurse"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="form-group">       
+          <div class="input-group mb-3">
+            <input type="number" class="form-control" id="usernumdoc" name="usernumdoc" placeholder="Número de documento">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-address-card"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">         
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            <div class="input-group-append">
+              <div class="input-group-text" >
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="showPassword">
+            <label class="form-check-label" for="showPassword">Mostrar contraseña</label>
+          </div>
+        </div>
+
+          <!-- /.col -->
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+          </div>
+          <!-- /.col -->
+
+      </form>
+
+
+    </div>
+    <!-- /.card-body -->
+     
+  </div>
+  <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- jquery-validation -->
+<script src="{{ url_for('static', filename='plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/jquery-validation/additional-methods.min.js') }}"></script>
+
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+
+
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        form.classList.add('was-validated');
+        form.submit();
+      }
+    });
+
+    $('#login').validate({
+      rules: {
+        username: {
+          required: true,
+          minlength: 4,
+        },
+        usernumdoc: {
+          required: true,
+          minlength: 8,
+          digits: true
+        },
+        password: {
+          required: true,
+          minlength: 8
+        },
+      },
+      messages: {
+        username: {
+          required: "Ingresá tu nombre de usuaria/o",
+          minlength: "Es demasiado corto para ser válido"
+        },
+        usernumdoc: {
+          required: "Ingresá solamente tu número de documento",
+          minlength: "Es demasiado corto para ser válido",
+          digits: "Ingresá solo números"
+        },
+        password: {
+          required: "Ingresá tu password",
+          minlength: "Es demasiado corto para ser válido"
+        },
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.input-group').after(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      }
+    });
+
+    $.extend($.validator.messages, {
+      number: "Ingresá un número válido."
+    });
+
+    $('#showPassword').on('change', function() {
+    const passwordInput = $('#password');
+    if ($(this).is(':checked')) {
+      passwordInput.attr('type', 'text');
+    } else {
+      passwordInput.attr('type', 'password');
+    }
+  });
+
+  });
+
+</script>
+
+
+
+
+</body>
+</html>

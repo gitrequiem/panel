@@ -1,0 +1,204 @@
+{% include 'layout_header.html' %}
+<head>
+    
+  
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    
+    <!-- Font Awesome -->
+    <!--<link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+    
+    <!-- DataTables -->
+    <!--<link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">-->
+    <!--<link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">-->
+    <!--<link rel="stylesheet" href="../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">-->
+  
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+  
+  
+    <!-- Theme style -->
+    <!--<link rel="stylesheet" href="../../dist/css/adminlte.min.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css') }}">
+</head>
+<!--<body class="hold-transition sidebar-mini">-->
+<body class="sidebar-mini layout-navbar-fixed" style="height: auto;">
+
+<!-- Site wrapper -->
+<div class="wrapper">
+  <!-- Navbar -->
+  {% include 'layout_navbar.html' %}
+  <!-- /.navbar -->
+  
+  <!-- Sidebar -->
+  {% include 'layout_sidebar.html' %}
+  <!-- /.sidebar -->
+  
+  
+  
+  <!-- 
+  Content Wrapper. Contains page content 
+  INICIO DEL CONTENIDO  
+  -->
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section clas="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Reportes</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">DataTables</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- / .container-fluid -->
+    </section>
+
+    
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Reportes</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="reportes_table" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha/Hora Inicio</th>
+                                        <th>Fecha/Hora Finalizacion</th>
+                                        <th>Unidad</th>
+                                        <th>Quirófano</th>
+                                        <th>Especialidad</th>
+                                        <th>Paciente</th>
+                                        <th>DNI</th>
+                                        <th>Nacionalidad</th>
+                                        <th>Procedencia</th>
+                                        <th>Ver más</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>22/07/2024 22:30:00</td>
+                                        <td>23/07/2024 2:30:00</td>
+                                        <td>URG</td>
+                                        <td>Qx 1</td>
+                                        <td>Cirugía General</td>
+                                        <td>Gómez José</td>
+                                        <td>24876980</td>
+                                        <td>Argentino</td>
+                                        <td>Almagro</td>
+                                        <td><button class="btn btn-primary btn-sm" type="button"><i class="fas fa-eye"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>21/07/2024 10:45:00</td>
+                                        <td>21/07/2024 13:00:00</td>
+                                        <td>Unidad 5 y 6</td>
+                                        <td>Qx 2</td>
+                                        <td>Ortopedia y Traumatología </td>
+                                        <td>López Carlos</td>
+                                        <td>34786008</td>
+                                        <td>Argentino</td>
+                                        <td>Ramos Mejía</td>
+                                        <td><button class="btn btn-primary btn-sm" type="button"><i class="fas fa-eye"></i></button></td>
+                                    </tr>                                    
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Fecha/Hora Inicio</th>
+                                        <th>Fecha/Hora Finalizacion</th>
+                                        <th>Unidad</th>
+                                        <th>Quirófano</th>
+                                        <th>Especialidad</th>
+                                        <th>Paciente</th>
+                                        <th>DNI</th>
+                                        <th>Nacionalidad</th>
+                                        <th>Procedencia</th>
+                                        <th>Ver más</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- / .card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- / .col -->
+            </div>
+            <!-- / .row -->
+        </div>
+        <!-- / .container-fluid -->
+    </section>
+    <!-- / .content -->
+
+
+</div>
+
+  <!-- 
+  /.content-wrapper 
+    FIN DEL CONTENIDO  
+  -->  
+  <!-- Footer -->
+  {% include 'layout_footer.html' %}
+  <!-- /.footer -->
+  
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+ <!-- ./wrapper -->
+<!-- jQuery -->
+<!--<script src="../../plugins/jquery/jquery.min.js"></script>-->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+
+
+<!-- Bootstrap 4 -->
+<!--<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>-->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<script src="{{ url_for('static', filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/jszip/jszip.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script> 
+ 
+ <!-- AdminLTE App -->
+ <!--<script src="../../dist/js/adminlte.min.js"></script> -->
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+ 
+<script>
+   $(function () {
+     $("#reportes_table").DataTable({
+       "responsive": true, "lengthChange": false, "autoWidth": false,
+       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+     }).buttons().container().appendTo('#reportes_table_wrapper .col-md-6:eq(0)');
+     $('#example2').DataTable({
+       "paging": true,
+       "lengthChange": false,
+       "searching": false,
+       "ordering": true,
+       "info": true,
+       "autoWidth": false,
+       "responsive": true,
+     });
+   });
+</script>
+</body>

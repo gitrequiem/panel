@@ -1,0 +1,108 @@
+<!-- # app/templates/index.html -->
+ 
+{% include 'layout_header.html' %}
+
+{% block extra_styles %}
+<!-- Toastr -->
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}"> 
+
+{% endblock %}
+
+<body class="sidebar-mini layout-navbar-fixed" style="height: auto;">
+  <!-- Site wrapper -->
+  <div class="wrapper">
+    <!-- Navbar -->
+    {% include 'layout_navbar.html' %}
+    <!-- /.navbar -->
+    
+    <!-- Sidebar -->
+    {% include 'layout_sidebar.html' %}
+    <!-- /.sidebar -->
+    
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- INICIO DEL CONTENIDO --> 
+      
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>{{ headers['section'] }}</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{ url_for('index.index') }}">Home</a></li>
+              </ol>
+            </div>
+          </div>
+        </div><!-- /.container-fluid -->
+      </section>
+      
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <!-- Default box -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Bienvenida!</h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  Estás en el panel de Requiem. Desde acá vas a poder gestionar pacientes, todas las cirugías programadas y de guardia, y todas las entidades relacionadas.
+                  <br>
+                  {{ session['decoded_token'] }}
+                  <br>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  Por consultas o ayuda escribí a: <a href="mailto:requiem.desarrollo@gmail.com" class="nav-link">requiem.desarrollo@gmail.com
+                    <i class="fas fa-envelope"></i>
+                  </a>
+                </div>
+                <!-- /.card-footer -->
+              </div>
+              <!-- /.card -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+      
+      <!-- FIN DEL CONTENIDO -->  
+    </div>
+    <!-- /.content-wrapper -->
+    
+    <!-- Footer -->
+    {% include 'layout_footer.html' %}
+    <!-- /.footer -->
+    
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+  
+  <!-- jQuery -->
+  <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+
+  <!-- Bootstrap 4 -->
+  <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+  <!-- AdminLTE App -->
+  <script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+    
+
+  {% include 'layout_toastr.html' %}
+</body>

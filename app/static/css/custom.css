@@ -1,0 +1,38 @@
+/* static/css/custom.css */
+
+/* body {
+/*    background: url('/static/img/requiem_background.png') no-repeat center center fixed;
+/*    background-size: cover; /* Ajusta la imagen para cubrir el área completa */
+/*    color: #333; /* Ajusta el color del texto si es necesario */
+/*    margin: 0; /* Elimina el margen predeterminado */
+/*    padding: 0; /* Elimina el relleno predeterminado */
+/*    /*min-height: 100vh; /* Asegura que el fondo cubra toda la altura de la ventana */
+/*}
+
+/*.wrapper, .content-wrapper {
+/*    background: transparent; /* Asegura que los contenedores internos sean transparentes */
+/*} */
+
+body {
+    position: relative; /* Asegura que el pseudo-elemento se posicione relativo al body */
+    margin: 0; /* Elimina el margen predeterminado */
+    padding: 0; /* Elimina el relleno predeterminado */
+    color: #333; /* Ajusta el color del texto si es necesario */
+}
+
+body::before {
+    content: "";
+    position: fixed; /* Asegura que el pseudo-elemento cubra toda la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/static/img/requiem_background.png') no-repeat center center fixed;
+    background-size: cover; /* Ajusta la imagen para cubrir el área completa */
+    opacity: 1; /* Ajusta el nivel de transparencia aquí (0.5 es un 50% de transparencia) */
+    z-index: -1; /* Asegura que el pseudo-elemento esté detrás del contenido principal */
+}
+
+.wrapper, .content-wrapper {
+    background: transparent; /* Asegura que los contenedores internos sean transparentes */
+}

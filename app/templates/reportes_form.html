@@ -1,0 +1,122 @@
+{% include 'layout_header.html' %}
+
+{% block extra_styles %}
+    <!-- Aquí puedes incluir los estilos específicos si es necesario -->
+
+<!-- Toastr -->
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}"> 
+{% endblock %}
+
+<body class="sidebar-mini layout-navbar-fixed" style="height: auto;">
+<div class="wrapper">
+
+<!-- Navbar -->
+{% include 'layout_navbar.html' %}
+<!-- /.navbar -->
+  
+<!-- Sidebar -->
+{% include 'layout_sidebar.html' %}
+<!-- /.sidebar -->
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>{{ headers['section'] }}</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ url_for('index.index') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('reportes.reportes_all') }}">Reportes</a></li>
+                        <li class="breadcrumb-item active">{{ headers['section'] }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- / .container-fluid -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Generar Reporte</h3>
+                    </div>
+                    <div class="card-body">
+                        <form form id="reporteForm" action="{{ url_for('reportes.reportes_all') }}" method="post">
+                            <div class="form-group">
+                                <label for="start_date">Desde:</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date">
+                            </div>
+                            <div class="form-group">
+                                <label for="end_date">Hasta:</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date">
+                            </div>
+                            <div class="form-group">
+                                <label for="reporte">Reporte:</label>
+                                <select class="form-control" name="url_reporte" id="url_reporte">
+                                    {% for titulo, reporte in opciones %}
+                                    <option value="{{ reporte }}">{{ titulo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Generar Reporte</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Footer -->
+{% include 'layout_footer.html' %}
+<!-- /.footer -->
+  
+<!-- Control Sidebar -->
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+<!-- /.control-sidebar -->
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+
+<script>
+    
+    
+    $(document).ready(function () {
+    // Validación del formulario
+    $('#reportForm').on('submit', function (e) {
+        let isValid = true;
+        $(this).find(':input[required]').each(function () {
+            if ($(this).val() === '') {
+                $(this).addClass('is-invalid');
+                isValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        if (!isValid)  
+ {
+            e.preventDefault(); // Previene el envío del formulario si hay errores
+        }
+    });
+});
+</script>
+
+{% include 'layout_toastr.html' %}
+</body>
+
+
+
+

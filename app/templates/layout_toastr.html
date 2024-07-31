@@ -1,0 +1,27 @@
+<!-- #app/templates/layout_toastr -->
+ 
+<!-- TOASTR -->
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.min.js') }}"></script>
+<link href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}" rel="stylesheet" />
+<!-- Toastr -->
+<div aria-live="polite" aria-atomic="true" class="d-flex justify-content-end align-items-center" style="min-height: 200px;">
+<div id="toasts-container" style="position: absolute; top: 1rem; right: 1rem;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <script>
+            $(document).ready(function() {
+                toastr.{{ category }}('{{ message }}');
+            });
+            // $(document).ready(function() {
+            //     {% for category, message in messages %}
+            //     toastr["{{ category }}"]("{{ message }}");
+            //     {% endfor %}
+            // });
+        </script>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+</div>
+<!-- /Toastr -->
