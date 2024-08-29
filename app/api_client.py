@@ -37,4 +37,8 @@ class APIClient:
         # #response.raise_for_status()
         return response.json()
 
+    def put_data(self, endpoint, data):
+        headers = {'Authorization': f'Bearer {self.token}'} if self.token else{}
+        response = requests.put(f'{self.base_url}/{endpoint}',headers=headers,json=data)
+        return response.json()
     

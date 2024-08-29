@@ -8,12 +8,14 @@ pacientes_bp = Blueprint('pacientes', __name__)
 
 # Ruta
 ruta_pacientes_get_all = '/pacientes/get/all'
+ruta_pacientes_post = '/pacientes/post'
 
 # Rutas adicionales
 ruta_doctipos_get_all = '/doctipos/get/all'
 ruta_localidades_get_all = '/localidades/get/all'
 ruta_provincias_get_all = '/provincias/get/all'
 ruta_nacionalidades_get_all = '/nacionalidades/get/all'
+ruta_localidades_get_provincia_id = '/localidades/get/provincias/id'
 
 @pacientes_bp.route(ruta_pacientes_get_all, methods=['GET'])
 def pacientes_get_all():
@@ -42,6 +44,7 @@ def pacientes_get_all():
         response_doctipos = api_client.get_data(ruta_doctipos_get_all)
         response_provincias = api_client.get_data(ruta_provincias_get_all)
         response_localidades = api_client.get_data(ruta_localidades_get_all)
+
         response_nacionalidades = api_client.get_data(ruta_nacionalidades_get_all)
 
         if response_pacientes['status'] == 'success':
@@ -132,7 +135,160 @@ def pacientes_get_all():
 
     return render_template('pacientes_view.html', data=data, headers=headers)
 
+# Ruta para crear un paciente
+@pacientes_bp.route(ruta_pacientes_post, methods=['GET','POST'])
+def pacientes_post():
+    message = ''
+    
+    headers = {
+        "app": Config.APP_TITLE,
+        "section": "Pacientes"
+    }
+  
+    authorized = False
+    if ruta_pacientes_get_all and ruta_doctipos_get_all and ruta_localidades_get_all and ruta_provincias_get_all and ruta_nacionalidades_get_all in session.get('permissions', []):
+        authorized = True
+        
+    if not authorized:
+        message = f"Usuario no autorizado (permissions err)"
+        flash(message, 'warning')
+        return redirect(url_for('index.index'))
+        
+    api_client = current_app.api_client
+    provincia_seleccionada = None
+    try:
+        
+        response_doctipos = api_client.get_data(ruta_doctipos_get_all) # accede a la ruta del get all de tipos de documentos de la api
+        response_provincias = api_client.get_data(ruta_provincias_get_all)
+        response_localidades = api_client.get_data(ruta_localidades_get_all)
+        response_nacionalidades = api_client.get_data(ruta_nacionalidades_get_all)
+         
+        if response_doctipos.get('status') == 'success':
+            doc_tipos = response_doctipos.get('data', [])
+        else:
+            flash('Error al obtener los tipos de documentos', 'error')
+            doc_tipos = []
+            
+        if response_nacionalidades.get('status') == 'success':
+            nacionalidades = response_nacionalidades.get('data', [])
+        else:
+            flash('Error al obtener las nacionalidades', 'error')
+            nacionalidades = []
+            
+        if response_provincias['status'] == 'success':
+            provincias = response_provincias['data']  # Extrae la lista 
+            message += f" y provincias obtenidos!"
+        else:
+            message += f"Error en la respuesta de la API (provincias): {response_provincias.get('message', 'Error desconocido')}"
+            flash(message, 'danger')
+            provincias = []  # Asegúrate de pasar una lista vacía en caso de error  
+            
+        if response_localidades['status'] == 'success':
+            localidades = response_localidades['data']  # Extrae la lista 
+            message += f" y localidades obtenidos!"
+        else:
+            message += f"Error en la respuesta de la API (localidades): {response_localidades.get('message', 'Error desconocido')}"
+            flash(message, 'danger')
+            localidades = []  # Asegúrate de pasar una lista vacía en caso de error    
+            
+            
+    except requests.RequestException as e:
+        message = f"Error inesperado al obtener los datos necesarios para crear un paciente nuevo {str(e)}"
+        flash(message, 'warning')        
+    
+    # Crear opciones para el desplegable de tipos de documentos y un diccionario para búsqueda rápida
+    opciones_doc_tipos = [(doc_tipo['doc_tipo'], doc_tipo['id_doc_tipo']) for doc_tipo in doc_tipos]
+    print(opciones_doc_tipos) # imprime por consola los tipos de documento para asegurarme que funciona.
+        
+    # Crear opciones para el desplegable de nacionalidades y un diccionario para búsqueda rápida
+    opciones_nacionalidades = [(nacionalidad['nacionalidad'], nacionalidad['id_nacionalidad']) for nacionalidad in nacionalidades]
+    print(opciones_nacionalidades) # imprime por consola las nacionalidades para asegurarme que funciona.
+    
+    # Crear opciones para el desplegable de provincias y un diccionario para búsqueda rápida
+    opciones_provincias = [(provincia['provincia'],provincia['id_provincia']) for provincia in provincias]
+    print(opciones_provincias) # imprime por consola las provincias para asegurarme que funciona.
+    
+    opciones_localidades = {}
+    for localidad in localidades:
+        id_provincia = localidad.get('id_provincia')
+        if id_provincia:
+            opciones_localidades.setdefault(id_provincia, []).append(
+                (localidad['id_localidad'], localidad['localidad'])
+            )
+               
+    print(opciones_localidades) # imprime por consola las localidades asociadas a una provincia para asegurarme que funciona.
+    
+    form_data = {
+        'nombre': '',
+        'apellidos':'',
+        'numero de documento': '' 
+    }
+    
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        form_data['nombre'] = request.form['nombre']
+        form_data['apellidos'] = request.form['apellidos']
+        nacionalidad_seleccionada = request.form['nacionalidad']  # Nombre o ID de la nacionalidad seleccionada
+        doc_tipo_seleccionado = request.form['doc_tipo'] # Nombre o ID del tipo de documento seleccionado
+        form_data['numero de documento'] = request.form['doc_numero']
+        provincia_seleccionada = request.form['provincia'] # Nombre o ID de la provincia seleccionada
+        localidad_seleccionada = request.form['localidad'] # Nombre o ID de la localidad seleccionada
+        
+        try:
+            nacionalidad_seleccionada = int(nacionalidad_seleccionada) # para que tome el id en vez del string
+        except ValueError:
+            flash("La nacionalidad seleccionada no es válida.", "error")
+            return render_template('pacientes_form.html', headers=headers, form_action=url_for('pacientes.pacientes_post'), form_method='POST', form_data=form_data, opciones_nacionalidades=opciones_nacionalidades)
+
+        try:
+            doc_tipo_seleccionado = int(doc_tipo_seleccionado) # para que tome el id en vez del string
+        except ValueError:
+            flash("El tipo de documento seleccionado no es válido.", "error")
+            return render_template('pacientes_form.html', headers=headers, form_action=url_for('pacientes.pacientes_post'), form_method='POST', form_data=form_data, opciones_doc_tipos=opciones_doc_tipos)
+        
+        try:
+            provincia_seleccionada = int(provincia_seleccionada) # para que tome el id en vez del string
+        except ValueError:
+            flash("La provincia seleccionada no es válida.", "error")
+            return render_template('pacientes_form.html', headers=headers, form_action=url_for('pacientes.pacientes_post'), form_method='POST', form_data=form_data, opciones_provincias=opciones_provincias)
+        
+        try:
+            localidad_seleccionada = int(localidad_seleccionada) # para que tome el id en vez del string
+        except ValueError:
+            flash("La localidad seleccionada no es válida.", "error")
+            return render_template('pacientes_form.html', headers=headers, form_action=url_for('pacientes.pacientes_post'), form_method='POST', form_data=form_data, opciones_localidades=opciones_localidades)
+        
+        # Crear el JSON para enviar a la API
+        data = {
+            'nombre': form_data['nombre'],
+            'apellidos' : form_data['apellidos'],
+            'id_doc_tipo': doc_tipo_seleccionado,
+            'doc_numero' : form_data['doc_numero'],
+            'id_nacionalidad' : nacionalidad_seleccionada,
+            'id_provincia' : provincia_seleccionada,
+            'id_localidad' : localidad_seleccionada
+        }
+        
+        # Enviar datos a la API para crear el nuevo paciente
+        try:
+            response = api_client.post_data(ruta_pacientes_post, data)
+            if response.get('status') == 'success':
+                flash('Paciente creado exitosamente', 'success')
+                return redirect(url_for('pacientes.pacientes_get_all'))
+            else:
+                error_message = response.get('message', 'Error desconocido al crear el paciente.')
+                flash(error_message, 'warning')
+                return render_template('pacientes_form.html', headers=headers, form_action=url_for('pacientes.pacientes_post'), form_method='POST', form_data=form_data, opciones_doc_tipos=opciones_doc_tipos, opciones_nacionalidades=opciones_nacionalidades, opciones_provincias=opciones_provincias, opciones_localidades=opciones_localidades, provincia_seleccionada=provincia_seleccionada)
+        except Exception as e:
+            flash('Error inesperado al crear el paciente: ' + str(e), 'warning')
+
+    return render_template('pacientes_form.html', headers=headers, form_action=url_for('pacientes.pacientes_post'), form_method='POST', form_data=form_data, opciones_doc_tipos=opciones_doc_tipos, opciones_nacionalidades=opciones_nacionalidades, opciones_provincias=opciones_provincias, opciones_localidades=opciones_localidades, provincia_seleccionada=provincia_seleccionada)
 
 
 
- 
+# opciones_localidades = {}
+    # for localidad in localidades:
+    #     id_provincia = localidad.get('id_provincia')
+    #     if id_provincia:
+    #         opciones_localidades.setdefault(id_provincia, {})[localidad['id_localidad']] = localidad['localidad']   
+

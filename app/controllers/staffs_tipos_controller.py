@@ -1,6 +1,6 @@
 # app/controllers/staffs_roles_controller.py
 
-from flask import Blueprint, current_app, flash, redirect, render_template, session, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
 import requests
 from app.config import Config
 
@@ -8,6 +8,7 @@ stafftipos_bp = Blueprint('stafftipos', __name__)
 
 # Ruta
 ruta_staff_tipos_get_all = '/stafftipos/get/all'
+ruta_staff_tipos_post = '/stafftipos/post'
 
 @stafftipos_bp.route(ruta_staff_tipos_get_all, methods=['GET'])
 def staff_tipos_get_all():
@@ -61,3 +62,46 @@ def staff_tipos_get_all():
         data = []
 
     return render_template('staffs_tipos_view.html', data=data, headers=headers)
+
+# ruta para crear un tipo de satff
+@stafftipos_bp.route(ruta_staff_tipos_post, methods=['POST', 'GET'])
+def stafftipos_post():
+    
+    message = ''
+    
+    headers = {
+        "app": Config.APP_TITLE,
+        "section": "Crear Tipo de Staff"
+    }
+
+    authorized = ruta_staff_tipos_post in session.get('permissions', [])
+    if not authorized:
+        message = "Usuario no autorizado para crear tipos de staff (permissions err)"
+        flash(message, 'error')
+        return redirect(url_for('index.index'))
+    
+    data = {
+        
+        'staff_tipo': ''
+        
+        }
+    
+    if request.method == 'POST':
+               
+        data = {
+            'staff_tipo':request.form.get('staff_tipo'),
+            
+            }
+        
+        api_client = current_app.api_client
+        response = api_client.post_data(ruta_staff_tipos_post, data)
+        
+        if response.get('status') == 'success':
+            flash('Tipo de Staff creado exitosamente!', 'success')
+            return redirect(url_for('stafftipos.staff_tipos_get_all'))
+        else:
+            error_message = response.get('message', 'Error desconocido al crear el tipo de staff.')
+            flash(error_message, 'warning')
+            return render_template('staff_tipos_form.html', headers=headers, form_action=url_for('stafftipos.stafftipos_post'), form_method='POST', form_data=data)
+        
+    return render_template('staff_tipos_form.html', headers=headers, form_action=url_for('stafftipos.stafftipos_post'), form_method='POST', form_data=data)

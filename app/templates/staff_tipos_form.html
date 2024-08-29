@@ -1,0 +1,106 @@
+<!-- # app/templates/staff_tipos_form.html -->
+
+{% include 'layout_header.html' %}
+
+{% block extra_styles %}
+<!-- Toastr -->
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}">
+
+{% endblock %}
+
+<body class="sidebar-mini layout-navbar-fixed" style="height: auto;">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    {% include 'layout_navbar.html' %}
+    <!-- /.navbar -->
+
+    <!-- Sidebar -->
+    {% include 'layout_sidebar.html' %}
+    <!-- /.sidebar -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>{{ headers['section'] }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ url_for('index.index') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('stafftipos.staff_tipos_get_all') }}">Tipos de Staff</a></li>
+                            <li class="breadcrumb-item active">{{ headers['section'] }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- / .container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">{{ headers['section'] }}</h3>
+                            </div>
+                            <div class="card-body">
+                              <form id="stafftiposForm" method="{{ form_method }}" action="{{ form_action }}">
+                                <div class="form-group">
+                                  <label for="staff_tipo">Tipo de Staff</label>
+                                  <input type="text" class="form-control" id="staff_tipo" name="staff_tipo" required>
+                                  
+                                </div>
+                               
+                                <button type="submit" class="btn btn-primary">Crear</button>
+                              </form>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- / .content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    {% include 'layout_footer.html' %}
+
+</div>
+<!-- ./wrapper -->
+
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.min.js') }}"></script>
+<!-- jquery-validation -->
+<script src="{{ url_for('static', filename='plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/jquery-validation/additional-methods.min.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#stafftiposForm').validate({
+            rules: {
+                staff_tipo: {
+                    required: true,
+                    minlength: 5 // Por ejemplo, mínimo 10 caracteres
+                }
+            }
+        });
+    });
+    
+</script>
+
+
+{% include 'layout_toastr.html' %}
+</body>

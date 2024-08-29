@@ -1,6 +1,6 @@
 # app/controllers/diagnosticos_controller.py
 
-from flask import Blueprint, current_app, flash, redirect, render_template, session, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
 import requests
 from app.config import Config
 
@@ -8,6 +8,7 @@ diagnosticos_bp = Blueprint('diagnosticos', __name__)
 
 # rutas
 ruta_diagnosticos_get_all = '/diagnosticos/get/all'
+ruta_diagnosticos_post = '/diagnosticos/post'
 
 #adicionales
 ruta_especialidades_get_all = '/especialidades/get/all'
@@ -83,3 +84,73 @@ def diagnosticos_get_all():
         data = []
 
     return render_template('diagnosticos_view.html', data=data, headers=headers)
+
+# Ruta para crear un diagnóstico
+@diagnosticos_bp.route(ruta_diagnosticos_post, methods=['GET','POST'])
+def diagnosticos_post():
+    message = ''
+
+    headers = {
+        "app": Config.APP_TITLE,
+        "section": "Crear Diagnóstico"
+    }
+
+    authorized = ruta_diagnosticos_post and ruta_especialidades_get_all in session.get('permissions', [])
+    if not authorized:
+        message = "Usuario no autorizado para crear un diagnóstico (permissions err)"
+        flash(message, 'error')
+        return redirect(url_for('index.index'))
+    api_client = current_app.api_client
+
+    try:
+        response = api_client.get_data(ruta_especialidades_get_all) # accede a la ruta del get all de especialidades de la api
+        if response.get('status') == 'success':
+            especialidades = response.get('data', [])
+        else:
+            flash('Error al obtener las especialidades', 'error')
+            especialidades = []
+    except Exception as e:
+        flash('Error inesperado al obtener las especialidades', 'error')
+        especialidades = []
+
+    # Crear opciones para el desplegable de especialidades y un diccionario para búsqueda rápida
+    opciones_especialidades = [(especialidad['especialidad'], especialidad['id_especialidad']) for especialidad in especialidades]
+    
+    print(opciones_especialidades) # imprime por consola las especialidades para asegurarme que funciona.
+
+    form_data = {
+        'diagnostico': ''
+        
+    }
+
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        form_data['diagnostico'] = request.form['diagnostico']
+        especialidad_seleccionada = request.form['especialidad']  # Nombre o ID de la especialidad seleccionada
+        
+        try:
+            especialidad_seleccionada = int(especialidad_seleccionada) # para que tome el id en vez del string
+        except ValueError:
+            flash("La especialidad seleccionada no es válida.", "error")
+            return render_template('diagnosticos_form.html', headers=headers, form_action=url_for('diagnosticos.diagnosticos_post'), form_method='POST', form_data=form_data, opciones_especialidades=opciones_especialidades)
+
+        # Crear el JSON para enviar a la API
+        data = {
+            'diagnostico': form_data['diagnostico'],
+            'id_especialidad': especialidad_seleccionada
+        }
+
+        # Enviar datos a la API para crear el nuevo diagnóstico
+        try:
+            response = api_client.post_data(ruta_diagnosticos_post, data)
+            if response.get('status') == 'success':
+                flash('Diagnóstico creado exitosamente', 'success')
+                return redirect(url_for('diagnosticos.diagnosticos_get_all'))
+            else:
+                error_message = response.get('message', 'Error desconocido al crear el diagnóstico.')
+                flash(error_message, 'warning')
+                return render_template('diagnosticos_form.html', headers=headers, form_action=url_for('diagnosticos.diagnosticos_post'), form_method='POST', form_data=form_data, opciones_especialidades=opciones_especialidades)
+        except Exception as e:
+            flash('Error inesperado al crear el diagnóstico: ' + str(e), 'warning')
+
+    return render_template('diagnosticos_form.html', headers=headers, form_action=url_for('diagnosticos.diagnosticos_post'), form_method='POST', form_data=form_data, opciones_especialidades=opciones_especialidades)

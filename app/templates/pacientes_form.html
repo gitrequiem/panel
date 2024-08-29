@@ -1,0 +1,211 @@
+<!-- # app/templates/pacientes_form.html -->
+
+{% include 'layout_header.html' %}
+
+{% block extra_styles %}
+<!-- Toastr -->
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}">
+
+{% endblock %}
+
+<body class="sidebar-mini layout-navbar-fixed" style="height: auto;">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    {% include 'layout_navbar.html' %}
+    <!-- /.navbar -->
+
+    <!-- Sidebar -->
+    {% include 'layout_sidebar.html' %}
+    <!-- /.sidebar -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>{{ headers['section'] }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ url_for('index.index') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('pacientes.pacientes_get_all') }}">Pacientes</a></li>
+                            <li class="breadcrumb-item active">{{ headers['section'] }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- / .container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">{{ headers['section'] }}</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="pacientesForm" method="{{ form_method }}" action="{{ form_action }}">
+                                   
+                                    {% for field, value in form_data.items() %}
+                                        <div class="form-group">
+                                            <label for="{{ field }}">{{ field|capitalize }}</label>
+                                            <input type="text" id="{{ field }}" name="{{ field }}" class="form-control" value="{{ value }}" >
+                                        </div>
+                                    {% endfor %}
+                                    <div class="form-group">
+                                        <label for="doc_tipo">Tipo de documento</label>
+                                        
+                                        <select name="doc_tipo" id="doc_tipo" class="form-control">
+                                            <option value="">Selecciona un tipo de documento</option>
+                                            {% for doc_tipo in opciones_doc_tipos %}
+                                                <p>Iterando sobre: {{ doc_tipo }}</p>  <option value="{{ doc_tipo[1] }}">{{ doc_tipo[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="nacionalidad">Nacionalidad</label>
+                                        <select name="nacionalidad" id="nacionalidad" class="form-control">
+                                            <option value="">Selecciona una nacionalidad</option>
+                                            {% for nacionalidad in opciones_nacionalidades %}
+                                                <p>Iterando sobre: {{ nacionalidad }}</p>  <option value="{{ nacionalidad[1] }}">{{ nacionalidad[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="provincia">Provincia</label>
+                                        <select name = "provincia" id="provincia" class="form-control" onchange="actualizarLocalidades()"> 
+                                            <option value="">Selecciona una provincia</option>
+
+                                            {% for provincia in opciones_provincias %}
+                                                <p>Iterando sobre: {{ provincia }}</p>  <option value="{{ provincia[1] }}">{{ provincia[0] }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                        <label for="localidad">Localidad</label>
+                                        <select name="localidad" id="localidad" class="form-control">
+                                            <option value="">Selecciona una localidad</option>
+
+                                            {% for id_localidad, localidad in opciones_localidades[provincia_seleccionada] %}
+                                                <option value="{{ id_localidad }}">{{ localidad }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                        
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Crear Paciente</button>
+                                </form>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+           <!-- / .content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    {% include 'layout_footer.html' %}
+
+</div>
+<!-- ./wrapper -->
+
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.min.js') }}"></script>
+<!-- jquery-validation -->
+<script src="{{ url_for('static', filename='plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/jquery-validation/additional-methods.min.js') }}"></script>
+
+<script>
+    
+    $(document).ready(function() {
+        $('#pacientesForm').validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    minlength: 2 // Ajusta la longitud mínima según tus necesidades
+                },
+                apellidos: {
+                    required: true,
+                    minlength: 2 // Ajusta la longitud mínima según tus necesidades
+                },
+                doc_tipo: {
+                    required: true,
+                },
+                num_doc: {
+                    required: true,
+                    minlength: 8 // Ajusta la longitud mínima según tus necesidades
+                },
+                nacionalidad: {
+                    required: true,
+                },
+                provincia: {
+                    required: true,
+                },
+                localidad: {
+                    required: true,
+                },
+
+            },
+            messages: {
+                nombre: {
+                    required: "Por favor, ingresa el nombre."
+                },
+                apellidos: {
+                    required: "Por favor, ingresa el o los apellidos."
+                },
+                doc_tipo: {
+                    required: "Por favor, seleccione un tipo de documento."
+                },
+                doc_numero: {
+                    required: "Por favor, ingrese un número de documento."
+                },
+                nacionalidad: {
+                    required: "Por favor, seleccione una nacionalidad."
+                },
+                provincia: {
+                    required: "Por favor, seleccione una provincia."
+                },
+                localidad: {
+                    required: "Por favor, seleccione una localidad."
+                },
+                
+            }
+        });
+
+        
+        var opciones_localidades = [];
+        function actualizarLocalidades() {
+            const provincia_seleccionada = parseInt($().val());
+            const selectLocalidades = $('#localidad');
+
+            selectLocalidades.empty();
+            selectLocalidades.append('<option value="">Selecciona una localidad</option>');
+            if (provincia_seleccionada && opciones_localidades in opciones_localidades) {
+                // Si la provincia está seleccionada y opciones_localidades está definida
+                opciones_localidades[provincia_seleccionada].forEach(localidad => {
+                    selectLocalidades.append(`<option value="${localidad.id_localidad}">${localidad.localidad}</option>`);
+                });
+            } else {
+                console.error('No se encontraron localidades para la provincia seleccionada o opciones_localidades no está definida');
+                // Mostrar un mensaje al usuario si hay un error
+                selectLocalidades.append('<option value="">No hay localidades disponibles</option>');
+            }
+        };
+    });
+    
+
+
+</script>
+
+
+{% include 'layout_toastr.html' %}
+</body>
