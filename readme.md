@@ -4,4 +4,4 @@
 
 ## Ejecutar
 
-    python app.py
+    waitress-serve --host=0.0.0.0 --port=5010 app:app

@@ -48,7 +48,9 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ headers['section'] }}</h3>
+                            <a href="{{ url_for('staffs.staffs_post') }}" class="btn btn-primary btn-sm float-rigth">
+                                <i class="fas fa-plus"></i> Nuevo
+                            </a>
                         </div>
                         <div class="card-body">
                             <table id="table" class="table table-bordered table-striped">
@@ -118,6 +120,7 @@
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script> 
 <!-- AdminLTE App -->
 <script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+
 <!-- Specific Scripts -->
 <script>
     $(function () {
@@ -129,6 +132,7 @@
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#table_wrapper .col-md-6:eq(0)');
     });
+    
 </script>
 
 {% include 'layout_toastr.html' %}

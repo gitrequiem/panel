@@ -48,7 +48,9 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ headers['section'] }}</h3>
+                            <a href="{{ url_for('pacientes.pacientes_post') }}" class="btn btn-primary btn-sm float-rigth">
+                                <i class="fas fa-plus"></i> Nuevo
+                            </a>
                         </div>
                         <div class="card-body">
                             <table id="table" class="table table-bordered table-striped">

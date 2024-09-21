@@ -1,4 +1,4 @@
-<!-- # app/templates/pacientes_form.html -->
+<!-- # app/templates/pacientes_edit_form.html -->
 
 {% include 'layout_header.html' %}
 
@@ -31,7 +31,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ url_for('index.index') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ url_for('pacientes.pacientes_get_all') }}">Pacientes</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('staffs.staffs_get_all') }}">Paciente</a></li>
                             <li class="breadcrumb-item active">{{ headers['section'] }}</li>
                         </ol>
                     </div>
@@ -49,57 +49,45 @@
                                 <h3 class="card-title">{{ headers['section'] }}</h3>
                             </div>
                             <div class="card-body">
-                                <form id="pacientesForm" method="{{ form_method }}" action="{{ form_action }}">
-                                   
-                                    {% for field, value in form_data.items() %}
+                                <!-- <form id="editForm" method="PUT" action="">  -->
+                                <form id="editForm" method="{{ form_method }}" action="{{ form_action }}">
+                                    <input type="hidden" name="id_paciente" id="id_paciente" value="{{ form_data.id_paciente }}">
                                     <div class="form-group">
-                                        <label for="{{ field }}">{{ field|capitalize }}</label>
-                                            
-                                        <input type="text" id="{{ field }}" name="{{ field }}" class="form-control" value="{{ value }}" >
-                                    {% endfor %}
-
-                                        <label for="doc_numero">Número de documento</label>
-                                        <input type="text" name="doc_numero" id="doc_numero" class="form-control">
-
+                                    <label for="nombre">Nombres:</label>
+                                    <input type="text" class="form-control" id= "nombre"name="nombre" value="{{ form_data.nombre }}">
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="apellidos">Apellidos:</label>
+                                    <input type="text" class="form-control" id="apellidos" name="apellidos" value="{{ form_data.apellidos }}">
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="doc_numero">Número de documento:</label>
+                                    <input type="text" class="form-control" id="doc_numero" name="doc_numero" value="{{ form_data.doc_numero }}">
+                                    </div>
+                                    <div class="form-group">
                                         <label for="doc_tipo">Tipo de documento</label>
-                                        <select name="id_doc_tipo" id="id_doc_tipo" class="form-control">
+                                        <select name="doc_tipo" id="doc_tipo" class="form-control">
                                             <option value="">Selecciona un tipo de documento</option>
                                             {% for doc_tipo in opciones_doc_tipos %}
-                                                <option value="{{ doc_tipo.id_doc_tipo }}">{{ doc_tipo.doc_tipo }}</option>
+                                                <p>Iterando sobre: {{ doc_tipo }}</p>  <option value="{{ doc_tipo[1] }}">{{ doc_tipo[0] }}</option>
                                             {% endfor %}
                                         </select>
-
                                         <label for="nacionalidad">Nacionalidad</label>
-                                        <select name="id_nacionalidad" id="id_nacionalidad" class="form-control">
+                                        <select name="nacionalidad" id="nacionalidad" class="form-control">
                                             <option value="">Selecciona una nacionalidad</option>
                                             {% for nacionalidad in opciones_nacionalidades %}
-                                                <option value="{{ nacionalidad.id_nacionalidad }}">{{ nacionalidad.nacionalidad }}</option>
+                                                <p>Iterando sobre: {{ nacionalidad }}</p>  <option value="{{ nacionalidad[1] }}">{{ nacionalidad[0] }}</option>
                                             {% endfor %}
                                         </select>
-
-                                        <label for="provincia">Provincia</label>
-                                        <select name="provincia" id="provincia" class="form-control">
-                                            <option value="">Selecciona una provincia</option>
-                                            {% for provincia in opciones_provincias %}
-                                               <option value="{{ provincia.id_provincia }}">{{ provincia.provincia }}</option>
-                                            {% endfor %}
-                                        </select>
-
                                         <label for="localidad">Localidad</label>
                                         <select name="id_localidad" id="id_localidad" class="form-control">
-                                            <option value="">Esperando a la selección de la provincia</option>
-                                            <!-- Las opciones de localidades se llenarán dinámicamente con JavaScript 
-
+                                            <option value="">Selecciona una localidad</option>
                                             {% for localidad in opciones_localidades %}
-                                                <option value="{{ localidad[1] }}">{{ localidad[0] }}</option>
+                                                <p>Iterando sobre: {{ localidad }}</p>  <option value="{{ localidad[1] }}">{{ localidad[0] }}</option>
                                             {% endfor %}
-
-                                            -->
-
-                                        </select>
-
+                                          </select>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Crear Paciente</button>
+                                    <button type="submit" class="btn btn-primary">Editar Paciente</button>
                                 </form>
                             </div>
                           </div>
@@ -108,7 +96,7 @@
             </div>
         </section>
  
-           <!-- / .content -->
+        <!-- / .content -->
     </div>
     <!-- /.content-wrapper -->
 
@@ -131,11 +119,9 @@
 <script src="{{ url_for('static', filename='plugins/jquery-validation/additional-methods.min.js') }}"></script>
 
 <script>
-    
     $(document).ready(function() {
-
-        $('#pacientesForm').validate({
-            
+        // Validación del formulario
+        $('#editForm').validate({
             rules: {
                 nombre: {
                     required: true,
@@ -161,8 +147,8 @@
                 localidad: {
                     required: true,
                 },
-            },
 
+            },
             messages: {
                 nombre: {
                     required: "Por favor, ingresa el nombre."
@@ -185,38 +171,64 @@
                 localidad: {
                     required: "Por favor, seleccione una localidad."
                 },
+                
             }
-
         });
-
-       
-        // Array de localidades pasado desde Jinja como JSON
-        var localidades = {{ opciones_localidades|tojson }};
-        
-        // Cuando cambia la provincia seleccionada
-        $('#provincia').change(function() {
-            var idProvincia = $(this).val();  // ID de la provincia seleccionada
-            var $localidadSelect = $('#id_localidad'); // Select de localidades
-            
-            // Limpia las opciones anteriores
-            $localidadSelect.empty();
-            $localidadSelect.append('<option value="">Selecciona una localidad</option>');
-            
-            // Filtra las localidades que correspondan a la provincia seleccionada
-            $.each(localidades, function(index, localidad) {
-                if (localidad.id_provincia == idProvincia) {
-                    $localidadSelect.append('<option value="' + localidad.id_localidad + '">' + localidad.localidad + '</option>');
-                }
-            });
-
-        });
-
-    }); //cierra function y document
     
+        
+    });
+        // Seleccionar el formulario
+    const form = document.getElementById('editForm');
 
+    // Escuchar el evento submit
+    form.addEventListener('submit', (event) => {
+    event.preventDefault(); // Prevenir el envío por defectos
+
+    // Obtener los datos del formulario
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    fetch(form.action, {
+        method: 'PUT',
+        headers: {
+
+            'Content-Type': 'application/json',
+            // Agrega aquí cualquier encabezado de autorización necesario
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Ejemplo
+        },
+
+        body: JSON.stringify(data)
+        })
+        .then(response => {
+            console.log('Respuesta:', response);
+
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`Respuesta del servidor: ${response.status} ${text}`);
+                });
+
+            }
+        return response.json();
+
+        })
+
+        .then(data => {
+            // Manejar la respuesta del servidor
+            if (data.message) {
+                //alert(data.message);
+            }
+                // Redirigir a otra página si es necesario
+                window.location.href = '/pacientes/get/all';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al guardar los cambios. Detalles del error:', error.message);
+        });
+
+    
+    });
 
 </script>
-
 
 {% include 'layout_toastr.html' %}
 </body>

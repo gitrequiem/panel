@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Configurar la clave secreta
-app.secret_key = 'requiem.panel.2024'  # Reemplaza con una cadena aleatoria y segura
+app.secret_key = Config.SECRET_KEY  # Reemplaza con una cadena aleatoria y segura
 
 # initialize API client
 api_client = APIClient(app.config['API_BASE_URL'])

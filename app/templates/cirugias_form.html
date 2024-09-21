@@ -1,0 +1,267 @@
+<!-- # app/templates/staffs_form.html -->
+
+{% include 'layout_header.html' %}
+
+{% block extra_styles %}
+<!-- Toastr -->
+<link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}">
+
+{% endblock %}
+
+<body class="sidebar-mini layout-navbar-fixed" style="height: auto;">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    {% include 'layout_navbar.html' %}
+    <!-- /.navbar -->
+
+    <!-- Sidebar -->
+    {% include 'layout_sidebar.html' %}
+    <!-- /.sidebar -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>{{ headers['section'] }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ url_for('index.index') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('cirugias.cirugias_get_all') }}">Cirugias</a></li>
+                            <li class="breadcrumb-item active">{{ headers['section'] }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- / .container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">{{ headers['section'] }}</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="cirugiasForm" method="{{ form_method }}" action="{{ form_action }}">
+                                    <div class="form-group">
+                                        <label for="id_paciente">Paciente:</label>
+                                        <input type="text" class="form-control" id="id_paciente" name="id_paciente" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="fecha_inicio">Fecha de inicio:</label>
+                                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="hora_inicio">Hora de inicio:</label>
+                                        <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="fecha_fin">Fecha de fin:</label>
+                                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="hora_fin">Hora de fin:</label>
+                                        <input type="time" class="form-control" id="hora_fin" name="hora_fin" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="hora_fin">Hora de fin:</label>
+                                        <input type="time" class="form-control" id="hora_fin" name="hora_fin" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_especialidad">Especialidad:</label>
+                                        <select class="form-control" id="id_especialidad" name="id_especialidad" required>
+                                            {% for espcialidad in opciones_especialidades %}
+                                            <option value="{{ especialidad[1] }}">{{ especialidad[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_especialidad">Especialidad:</label>
+                                        <select class="form-control" id="id_especialidad" name="id_especialidad" required>
+                                            {% for espcialidad in opciones_especialidades %}
+                                            <option value="{{ especialidad[1] }}">{{ especialidad[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_finalizacion">Tipo de finalización:</label>
+                                        <select class="form-control" id="id_finalizacion" name="id_finalizacion" required>
+                                            {% for finalizacion in opciones_finalizaciones %}
+                                            <option value="{{ finalizacion[1] }}">{{ finalizacion[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_programacion">Tipo de Programación:</label>
+                                        <select class="form-control" id="id_programacion" name="id_programacion" required>
+                                            {% for programacion in opciones_programaciones %}
+                                            <option value="{{ programacion[1] }}">{{ programacion[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_complejidad">Complejidad:</label>
+                                        <select class="form-control" id="id_complejidad" name="id_complejidad" required>
+                                            {% for complejidad in opciones_complejidades %}
+                                            <option value="{{ complejidad[1] }}">{{ complejidad[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="id_tipo_anestesia_solicitada">Anestesia Solicitada:</label>
+                                        <select class="form-control" id="id_tipo_anestesia_solicitada" name="id_tipo_anestesia_solicitada" required>
+                                            {% for tipo_anestesia in opciones_tipos_anestesias %}
+                                            <option value="{{ tipo_anestesia[1] }}">{{ tipo_anestesia[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_tipo_anestesia_realizada">Anestesia Realizada:</label>
+                                        <select class="form-control" id="id_tipo_anestesia_realizada" name="id_tipo_anestesia_realizada" required>
+                                            {% for tipo_anestesia in opciones_tipos_anestesias %}
+                                            <option value="{{ tipo_anestesia[1] }}">{{ tipo_anestesia[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_unidad">Unidad:</label>
+                                        <select class="form-control" id="id_unidad" name="id_unidad" required>
+                                            {% for unidad in opciones_unidades %}
+                                            <option value="{{ unidad[1] }}">{{ unidad[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="id_quirofano">Quirófano:</label>
+                                        <select id="id_quirofano" name="id_quirofano" required>
+                                            {% for quirofano in opciones_quirofanos %}
+                                            <option value="{{ quirofano[1] }}">{{ quirofano[0] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group form-check">
+                                        {% if form_data.programado %}
+                                        <input type="checkbox" class="form-check-input" id="programado" name="programado" checked>
+                                        {% else %}
+                                            <input type="checkbox" class="form-check-input" id="programado" name="programado">
+                                        {% endif %}
+                                        <label class="form-check-label" for="programado">Marcar si es programada</label>
+                                    </div>
+
+                                    <div class="form-group form-check"></div>
+                                        {% if form_data.estado %}
+                                        <input type="checkbox" class="form-check-input" id="estado" name="estado" checked>
+                                        {% else %}
+                                            <input type="checkbox" class="form-check-input" id="estado" name="estado">
+                                        {% endif %}
+                                        <label class="form-check-label" for="estado">Marcar si requiere internación</label>
+                                    </div>
+
+                                    <div class="form-group form-check"></div>
+                                        {% if form_data.lista_de_espera %}
+                                        <input type="checkbox" class="form-check-input" id="lista_de_espera" name="lista_de_espera" checked>
+                                        {% else %}
+                                            <input type="checkbox" class="form-check-input" id="lista_de_espera" name="lista_de_espera">
+                                        {% endif %}
+                                        <label class="form-check-label" for="lista_de_espera">Marcar si está en lista de espera</label>
+                                    </div>
+                            
+                                    <button type="submit">Registrar Cirugía</button>
+                                </form>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- / .content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    {% include 'layout_footer.html' %}
+
+</div>
+<!-- ./wrapper -->
+
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.min.js') }}"></script>
+<!-- jquery-validation -->
+<script src="{{ url_for('static', filename='plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/jquery-validation/additional-methods.min.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        // Validación del formulario
+        $('#reportForm').on('submit', function (e) {
+            let isValid = true;
+            $(this).find(':input[required]').each(function () {
+                if ($(this).val() === '') {
+                    $(this).addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            if (!isValid)  
+            {
+                e.preventDefault(); // Previene el envío del formulario si hay errores
+            }
+        });
+    });
+    
+    // Inicialización de los datetime pickers
+    flatpickr("#fecha_inicio", {
+            enableTime: false,
+            dateFormat: "Y-m-d"
+        });
+    flatpickr("#hora_inicio", {
+        enableTime: true,
+        noCalendar: true,
+        time_24hr: true
+    });
+    // Inicialización de los datetime pickers
+    flatpickr("#fecha_fin", {
+            enableTime: false,
+            dateFormat: "Y-m-d"
+        });
+    flatpickr("#hora_fin", {
+        enableTime: true,
+        noCalendar: true,
+        time_24hr: true
+    });
+</script>
+
+
+{% include 'layout_toastr.html' %}
+</body>

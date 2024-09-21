@@ -49,28 +49,36 @@
                                 <h3 class="card-title">{{ headers['section'] }}</h3>
                             </div>
                             <div class="card-body">
-                                <!-- <form id="editForm" method="PUT" action="">  -->
-                                <form id="editForm" method="{{ form_method }}" action="{{ form_action }}">
-                                   
-                                    {% for field, value in form_data.items() %}
-                                        <div class="form-group">
-                                            <label for="{{ field }}">{{ field|capitalize }}</label>
-                                            <input type="text" id="{{ field }}" name="{{ field }}" class="form-control" value="{{ value }}" >
-                                        </div>
-                                    {% endfor %}
+  
+                                <form id="editForm" method="{{ form_method }}" action="{{ form_action }}>
+
+                                        <input type="hidden" name="origin" id="origin" value="form">
+                                        <input type="hidden" name="id_staff" id="id_staff" value="{{ form_data.id_staff }}">
+                                    
+                                    <div class="form-group">
+                                        <label for="nombres">Nombres:</label>
+                                        <input type="text" class="form-control" id="nombres" name="nombres" value="{{ form_data.nombres }}">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="apellidos">Apellidos:</label>
+                                        <input type="text" class="form-control" id="apellidos" name="apellidos" value="{{ form_data.apellidos }}">
+                                    </div>
+                                    
                                     <div class="form-group">
                                         <label for="staff_tipo">Tipo de Staff</label>
-                                        <select name="staff_tipo" id="staff_tipo" class="form-control">
+                                        <select name="id_staff_tipo" id="id_staff_tipo" class="form-control">
                                             <option value="">Selecciona un tipo de staff</option>
                                             {% for staff_tipo in opciones_staff_tipos %}
-                                                <p>Iterando sobre: {{ staff_tipo }}</p>  <option value="{{ staff_tipo[1] }}">{{ staff_tipo[0] }}</option>
+                                                <option value="{{ staff_tipo.id_staff_tipo }}">{{ staff_tipo.staff_tipo }}</option>
                                             {% endfor %}
                                         </select>
-
                                     </div>
+
                                     <button type="submit" class="btn btn-primary">Editar Staff</button>
+                                
                                 </form>
-                            </div>
+                                </div>
                           </div>
                     </div>
                 </div>
@@ -111,7 +119,13 @@
                 nombres: {
                     required: true,
                     minlength: 2
-                }
+                },
+                
+                    staff_tipos: {
+                        required: true
+                    }
+                
+
             },
             messages: {
                 apellidos: {
@@ -119,61 +133,16 @@
                 },
                 nombres: {
                     required: "Por favor, ingresa los nombres."
+                },
+                staff_tipos: {
+                    required: "Por favor, selecciona un tipo de staff."
                 }
             }
         });
     
         
     });
-//     $(document).ready(function() {
-//         // Asegurarse de que jQuery esté cargado antes
-//         $('.edit-button').click(function() {
-//             var staffId = $(this).data('staff-id');
-//             var editForm = $('#editForm');
-
-//             // Verificar si el formulario existe y si el staffId es válido
-//             if (editForm.length && staffId) {
-//                 editForm.attr('action', `/staffs/${staffId}`);
-//                 // Agregar un mensaje de consola para depurar
-//                 console.log('Enviando formulario a:', editForm.attr('action'));
-//                 editForm.submit();
-//             } else {
-//                 console.error('Formulario o staffId no encontrado');
-//             }
-//     });
-// });
 </script>
-
-
-
-<!-- <script>
-    $(document).ready(function() {
-        $('#staffForm').validate({
-            rules: {
-                apellidos: {
-                    required: true,
-                    minlength: 2 // Ajusta la longitud mínima según tus necesidades
-                },
-                nombres: {
-                    required: true,
-                    minlength: 2 // Ajusta la longitud mínima según tus necesidades
-                }
-                
-            },
-            messages: {
-                apellidos: {
-                    required: "Por favor, ingresa los apellidos."
-                },
-                nombres: {
-                    required: "Por favor, ingresa los nombres."
-                }
-                
-            }
-        });
-        
-    });
-</script> -->
-
 
 {% include 'layout_toastr.html' %}
 </body>
